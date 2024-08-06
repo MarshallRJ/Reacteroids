@@ -105,7 +105,8 @@ export class Reacteroids extends Component {
     }
 
     //set astroid pos
-   this.setClosestAstroid(ship);
+    if (ship)
+    this.setClosestAstroid(ship);
 
     // Check for colisions
     this.checkCollisionsWith(this.bullets, this.asteroids);
