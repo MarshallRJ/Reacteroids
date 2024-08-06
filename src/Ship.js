@@ -50,6 +50,25 @@ export default class Ship {
     }
   }
 
+   calculateAngle(position1, position2) {
+    // Calculate the differences
+    const dx = position2.x - position1.x;
+    const dy = position2.y - position1.y;
+  
+    // Calculate the angle in radians
+    const angleRadians = Math.atan2(dy, dx);
+  
+    // Convert the angle to degrees
+    const angleDegrees = angleRadians * (180 / Math.PI);
+  
+    // Return the angle in degrees
+    return angleDegrees - 90;
+  }
+
+  autoAim(position){
+    this.rotation = this.calculateAngle(position,this.position);
+  }
+
   accelerate(val){
     this.velocity.x -= Math.sin(-this.rotation*Math.PI/180) * this.speed;
     this.velocity.y -= Math.cos(-this.rotation*Math.PI/180) * this.speed;
@@ -86,6 +105,12 @@ export default class Ship {
       const bullet = new Bullet({ship: this});
       this.create(bullet, 'bullets');
       this.lastShot = Date.now();
+      
+    }
+
+    if(state.keys.x){
+      console.log('astroidPostion',state.astroidPostion);
+      this.autoAim(state.astroidPostion);
     }
 
     // Move

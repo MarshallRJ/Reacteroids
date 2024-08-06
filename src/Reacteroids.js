@@ -10,7 +10,8 @@ const KEY = {
   A: 65,
   D: 68,
   W: 87,
-  SPACE: 32
+  SPACE: 32,
+  X: 88
 };
 
 export class Reacteroids extends Component {
@@ -29,11 +30,13 @@ export class Reacteroids extends Component {
         up    : 0,
         down  : 0,
         space : 0,
+        x: 0,
       },
       asteroidCount: 3,
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
-      inGame: false
+      inGame: false,
+      astroidPostion: {x:0,y:0}
     }
     this.ship = [];
     this.asteroids = [];
@@ -57,6 +60,7 @@ export class Reacteroids extends Component {
     if(e.keyCode === KEY.RIGHT  || e.keyCode === KEY.D) keys.right = value;
     if(e.keyCode === KEY.UP     || e.keyCode === KEY.W) keys.up    = value;
     if(e.keyCode === KEY.SPACE) keys.space = value;
+    if(e.keyCode === KEY.X) keys.x = value;
     this.setState({
       keys : keys
     });
@@ -99,6 +103,9 @@ export class Reacteroids extends Component {
       this.setState({ asteroidCount: count });
       this.generateAsteroids(count)
     }
+
+    //set astroid pos
+   this.setClosestAstroid(ship);
 
     // Check for colisions
     this.checkCollisionsWith(this.bullets, this.asteroids);
@@ -175,6 +182,44 @@ export class Reacteroids extends Component {
       });
       this.createObject(asteroid, 'asteroids');
     }
+  }
+
+  calculateDistance(position1, position2) {
+    // Calculate the differences
+    const dx = position2.x - position1.x;
+    const dy = position2.y - position1.y;
+  
+    // Calculate the distance using the Pythagorean theorem
+    const distance = Math.sqrt(dx * dx + dy * dy);
+  
+    // Return the distance
+    return distance;
+  }
+
+  setClosestAstroid(ship){
+
+    var distance = null;
+    let asteroid = null;
+    //find closeset 
+    this.asteroids.forEach(a => {
+
+      let asteroidDistance = this.calculateDistance(a.position,ship.position);
+      if (distance == null)
+      {
+          distance = asteroidDistance;
+          asteroid = a;
+      }
+      else if( asteroidDistance< distance) {
+        distance = asteroidDistance;
+        asteroid = a;
+
+      }
+        
+    });
+
+   
+    if (asteroid)
+      this.setState({astroidPostion: asteroid.position});
   }
 
   createObject(item, group){
