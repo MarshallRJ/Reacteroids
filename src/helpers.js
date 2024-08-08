@@ -47,3 +47,18 @@ export function randomNumBetweenExcluding(min, max, exMin, exMax) {
   }
   return random;
 };
+
+// Function to shuffle an array
+export function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+ 
+// Define words
+export const words = [
+  'Rocket', 'Asteroid', 'Galaxy', 'Nebula', 'Comet',
+  'Meteor', 'Star', 'Planet', 'Space', 'Orbit'
+];

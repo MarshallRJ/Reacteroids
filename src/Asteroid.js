@@ -1,6 +1,6 @@
 import Particle from './Particle';
 import { asteroidVertices, randomNumBetween } from './helpers';
-
+ 
 export default class Asteroid {
   constructor(args) {
     this.position = args.position
@@ -15,12 +15,15 @@ export default class Asteroid {
     this.create = args.create;
     this.addScore = args.addScore;
     this.vertices = asteroidVertices(8, args.size)
+ 
+    // Assign a word to the asteroid
+    this.text = "PASTE";
   }
-
+ 
   destroy(){
     this.delete = true;
     this.addScore(this.score);
-
+ 
     // Explode
     for (let i = 0; i < this.radius; i++) {
       const particle = new Particle({
@@ -37,12 +40,11 @@ export default class Asteroid {
       });
       this.create(particle, 'particles');
     }
-
+ 
     // Break into smaller asteroids
-    if(this.radius > 10){
+    if (this.radius > 10){
       for (let i = 0; i < 2; i++) {
         let asteroid = new Asteroid({
-
           size: this.radius/2,
           position: {
             x: randomNumBetween(-10, 20)+this.position.x,
@@ -55,12 +57,12 @@ export default class Asteroid {
       }
     }
   }
-
+ 
   render(state){
     // Move
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-
+ 
     // Rotation
     this.rotation += this.rotationSpeed;
     if (this.rotation >= 360) {
@@ -69,13 +71,13 @@ export default class Asteroid {
     if (this.rotation < 0) {
       this.rotation += 360;
     }
-
+ 
     // Screen edges
     if(this.position.x > state.screen.width + this.radius) this.position.x = -this.radius;
     else if(this.position.x < -this.radius) this.position.x = state.screen.width + this.radius;
     if(this.position.y > state.screen.height + this.radius) this.position.y = -this.radius;
     else if(this.position.y < -this.radius) this.position.y = state.screen.height + this.radius;
-
+ 
     // Draw
     const context = state.context;
     context.save();
@@ -90,6 +92,18 @@ export default class Asteroid {
     }
     context.closePath();
     context.stroke();
+ 
+    context.restore();
+    context.save();
+    context.translate(this.position.x, this.position.y);
+ 
+    // Draw text
+    context.font = '14px Arial';
+    context.fillStyle = '#FFF';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(this.text, 0, 0);
     context.restore();
   }
 }
+ 
