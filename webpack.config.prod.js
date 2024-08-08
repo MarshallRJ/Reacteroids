@@ -9,7 +9,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '/static/bundle.js',
     publicPath: '/static/'
   },
   plugins: [
@@ -24,7 +24,7 @@ module.exports = {
         warnings: false
       }
     }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin( {template: 'index.html'}),
   ],
   module: {
     loaders: [{
