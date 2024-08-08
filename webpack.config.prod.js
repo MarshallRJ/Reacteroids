@@ -9,8 +9,8 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/'
+    filename: '/static/bundle.js',
+    publicPath: '/static/'
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
@@ -24,7 +24,7 @@ module.exports = {
         warnings: false
       }
     }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin( {template: 'index.html'}),
   ],
   module: {
     loaders: [{

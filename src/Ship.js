@@ -1,4 +1,5 @@
 import Bullet from './Bullet';
+import TrackingBullet from './TrackingBullet';
 import Particle from './Particle';
 import { rotatePoint, randomNumBetween } from './helpers';
 
@@ -50,6 +51,25 @@ export default class Ship {
     }
   }
 
+   calculateAngle(position1, position2) {
+    // Calculate the differences
+    const dx = position2.x - position1.x;
+    const dy = position2.y - position1.y;
+  
+    // Calculate the angle in radians
+    const angleRadians = Math.atan2(dy, dx);
+  
+    // Convert the angle to degrees
+    const angleDegrees = angleRadians * (180 / Math.PI);
+  
+    // Return the angle in degrees
+    return angleDegrees - 90;
+  }
+
+  autoAim(position){
+    this.rotation = this.calculateAngle(position,this.position);
+  }
+
   accelerate(val){
     this.velocity.x -= Math.sin(-this.rotation*Math.PI/180) * this.speed;
     this.velocity.y -= Math.cos(-this.rotation*Math.PI/180) * this.speed;
@@ -71,6 +91,18 @@ export default class Ship {
     this.create(particle, 'particles');
   }
 
+  calculateCollisionVelocity(positionA,positionB, velocity, S) {
+    // Calculate the future position of point B
+    const Bx_prime = positionB.x + velocity.x * S;
+    const By_prime = positionB.y + velocity.y * S;
+
+    // Calculate the required velocity components for point A
+    const vAx = (Bx_prime - positionA.x) / S;
+    const vAy = (By_prime - positionA.y) / S;
+
+    return { x:vAx, y:vAy };
+}
+
   render(state){
     // Controls
     if(state.keys.up){
@@ -83,9 +115,20 @@ export default class Ship {
       this.rotate('RIGHT');
     }
     if(state.keys.space && Date.now() - this.lastShot > 300){
-      const bullet = new Bullet({ship: this});
+      let bullet;
+      if (state.keys.x) {
+        bullet = new TrackingBullet({ship: this, velocity: this.calculateCollisionVelocity(this.position, state.astroidPostion,state.astroidVelocity,50 )});
+      }
+      else
+        bullet = new Bullet({ship: this});
       this.create(bullet, 'bullets');
       this.lastShot = Date.now();
+      
+    }
+
+    if(state.keys.x){
+      console.log('astroidVelocity',state.astroidVelocity);
+      this.autoAim(state.astroidPostion);
     }
 
     // Move
