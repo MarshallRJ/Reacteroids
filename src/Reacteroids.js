@@ -43,6 +43,7 @@ export class Reacteroids extends Component {
     this.asteroids = [];
     this.bullets = [];
     this.particles = [];
+    this.backgroundImage = new Image();
   }
 
   handleResize(value, e){
@@ -76,6 +77,11 @@ export class Reacteroids extends Component {
     this.setState({ context: context });
     this.startGame();
     requestAnimationFrame(() => {this.update()});
+
+    this.backgroundImage.src = 'https://img.freepik.com/premium-photo/glowing-spaceship-orbits-planet-starry-galaxy-generated-by-ai_1038396-45.jpg'
+;
+// Update with the actual path to your image
+  
   }
 
   componentWillUnmount() {
@@ -97,6 +103,11 @@ export class Reacteroids extends Component {
     context.globalAlpha = 0.4;
     context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
     context.globalAlpha = 1;
+
+     // Draw background image
+     context.globalAlpha = 0.4;
+     context.drawImage(this.backgroundImage, 0, 0, this.state.screen.width, this.state.screen.height);
+     context.globalAlpha = 1;
 
     // Next set of asteroids
     if(!this.asteroids.length){
