@@ -36,7 +36,8 @@ export class Reacteroids extends Component {
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
       inGame: false,
-      astroidPostion: {x:0,y:0}
+      astroidPostion: {x:0,y:0},
+      astroidVelocity: {x:0,y:0}
     }
     this.ship = [];
     this.asteroids = [];
@@ -220,7 +221,7 @@ export class Reacteroids extends Component {
 
    
     if (asteroid)
-      this.setState({astroidPostion: asteroid.position});
+      this.setState({astroidPostion: asteroid.position, astroidVelocity: asteroid.velocity});
   }
 
   createObject(item, group){

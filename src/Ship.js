@@ -1,4 +1,5 @@
 import Bullet from './Bullet';
+import TrackingBullet from './TrackingBullet';
 import Particle from './Particle';
 import { rotatePoint, randomNumBetween } from './helpers';
 
@@ -90,6 +91,18 @@ export default class Ship {
     this.create(particle, 'particles');
   }
 
+  calculateCollisionVelocity(positionA,positionB, velocity, S) {
+    // Calculate the future position of point B
+    const Bx_prime = positionB.x + velocity.x * S;
+    const By_prime = positionB.y + velocity.y * S;
+
+    // Calculate the required velocity components for point A
+    const vAx = (Bx_prime - positionA.x) / S;
+    const vAy = (By_prime - positionA.y) / S;
+
+    return { x:vAx, y:vAy };
+}
+
   render(state){
     // Controls
     if(state.keys.up){
@@ -102,14 +115,19 @@ export default class Ship {
       this.rotate('RIGHT');
     }
     if(state.keys.space && Date.now() - this.lastShot > 300){
-      const bullet = new Bullet({ship: this});
+      let bullet;
+      if (state.keys.x) {
+        bullet = new TrackingBullet({ship: this, velocity: this.calculateCollisionVelocity(this.position, state.astroidPostion,state.astroidVelocity,50 )});
+      }
+      else
+        bullet = new Bullet({ship: this});
       this.create(bullet, 'bullets');
       this.lastShot = Date.now();
       
     }
 
     if(state.keys.x){
-      console.log('astroidPostion',state.astroidPostion);
+      console.log('astroidVelocity',state.astroidVelocity);
       this.autoAim(state.astroidPostion);
     }
 
