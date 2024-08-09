@@ -17,7 +17,8 @@ export default class Asteroid {
     this.vertices = asteroidVertices(8, args.size)
  
     // Assign a word to the asteroid
-    this.text = "PASTE";
+    this.text = args.shortcut.description;
+    this.shortcut = args.shortcut;
   }
  
   destroy(){
@@ -42,20 +43,21 @@ export default class Asteroid {
     }
  
     // Break into smaller asteroids
-    if (this.radius > 10){
-      for (let i = 0; i < 2; i++) {
-        let asteroid = new Asteroid({
-          size: this.radius/2,
-          position: {
-            x: randomNumBetween(-10, 20)+this.position.x,
-            y: randomNumBetween(-10, 20)+this.position.y
-          },
-          create: this.create.bind(this),
-          addScore: this.addScore.bind(this)
-        });
-        this.create(asteroid, 'asteroids');
-      }
-    }
+    // if (this.radius > 10){
+    //   for (let i = 0; i < 2; i++) {
+    //     let asteroid = new Asteroid({
+    //       size: this.radius/2,
+    //       position: {
+    //         x: randomNumBetween(-10, 20)+this.position.x,
+    //         y: randomNumBetween(-10, 20)+this.position.y
+    //       },
+    //       create: this.create.bind(this),
+    //       addScore: this.addScore.bind(this),
+    //       shortcut: this.shortcut
+    //     });
+    //     this.create(asteroid, 'asteroids');
+    //   }
+    // }
   }
  
   render(state){

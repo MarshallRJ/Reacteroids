@@ -3,6 +3,28 @@ import Ship from './Ship';
 import Asteroid from './Asteroid';
 import { randomNumBetweenExcluding } from './helpers'
 
+const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+const commandKey = isAppleDevice ? 'cmd' : 'ctrl';
+
+const shortcuts = [
+  { description: "Save file", shortcut: `${commandKey}+s` },
+  { description: "Copy", shortcut: `c+${commandKey}` },
+  { description: "Paste", shortcut: `${commandKey}+v` },
+  { description: "Undo", shortcut: `${commandKey}+z` },
+  { description: "Redo", shortcut: isAppleDevice ? `${commandKey}+shift+z` : `${commandKey}+y` },
+  { description: "Find", shortcut: `${commandKey}+f` },
+  { description: "Cut", shortcut: `${commandKey}+x` },
+  { description: "Select All", shortcut: `a+${commandKey}` },
+  { description: "New File", shortcut: `${commandKey}+n` },
+  { description: "Close Tab", shortcut: `${commandKey}+w` },
+];
+
+const getShortCut = ()=>{
+  //return shortcuts[];
+  const newShortcut = shortcuts[Math.floor(Math.random() * shortcuts.length)];
+  return newShortcut;
+} 
+
 const KEY = {
   LEFT:  37,
   RIGHT: 39,
@@ -32,6 +54,7 @@ export class Reacteroids extends Component {
         space : 0,
         x: 0,
       },
+      currentKeys: new Set(),
       asteroidCount: 3,
       currentScore: 0,
       topScore: localStorage['topscore'] || 0,
@@ -56,13 +79,72 @@ export class Reacteroids extends Component {
     });
   }
 
+  handleKeyDown(e) {
+    let prev = this.state.currentKeys;
+    console.log('prev',prev);
+    const key = e.key.toLowerCase();
+    console.log('key',key);
+
+    let currentKeys = new Set(prev);
+    if (key === 'meta' || key === 'control') {
+      currentKeys.add(commandKey);
+      
+    } else if (key !== 'shift') {
+      currentKeys.add(key);
+    }
+    this.setState({currentKeys: currentKeys})
+    
+      return currentKeys;
+  };
+
+  handleKeyUp(e) {
+   
+    let prev = this.state.currentKeys;
+    const key = e.key.toLowerCase();
+    let currentKeys = new Set(prev);
+    if (key === 'meta' || key === 'control') {
+      currentKeys.delete(commandKey);
+      
+    } else {
+      currentKeys.delete(key);
+      
+    }
+    this.setState({currentKeys: currentKeys})
+    return currentKeys;
+
+  };
+
   handleKeys(value, e){
+    e.preventDefault();
+    let currentKeys;
+    if (value)
+      currentKeys = this.handleKeyDown(e);
+    else
+      currentKeys =this.handleKeyUp(e);
+
     let keys = this.state.keys;
-    if(e.keyCode === KEY.LEFT   || e.keyCode === KEY.A) keys.left  = value;
-    if(e.keyCode === KEY.RIGHT  || e.keyCode === KEY.D) keys.right = value;
-    if(e.keyCode === KEY.UP     || e.keyCode === KEY.W) keys.up    = value;
-    if(e.keyCode === KEY.SPACE) keys.space = value;
-    if(e.keyCode === KEY.X) keys.x = value;
+
+    let ship = this.ship[0];
+    if (ship){
+      let asteroid = this.findMatchingAstroid(ship, currentKeys);
+      if (asteroid) {
+        keys.x = true;
+        keys.space = true;
+      }
+      else
+      {
+        keys.x = false;
+        keys.space = false;
+      }
+
+    }
+
+    
+    // if(e.keyCode === KEY.LEFT   || e.keyCode === KEY.A) keys.left  = value;
+    // if(e.keyCode === KEY.RIGHT  || e.keyCode === KEY.D) keys.right = value;
+    // if(e.keyCode === KEY.UP     || e.keyCode === KEY.W) keys.up    = value;
+    // if(e.keyCode === KEY.SPACE) keys.space = value;
+    // if(e.keyCode === KEY.X) keys.x = value;
     this.setState({
       keys : keys
     });
@@ -117,8 +199,8 @@ export class Reacteroids extends Component {
     }
 
     //set astroid pos
-    if (ship)
-    this.setClosestAstroid(ship);
+    // if (ship)
+    //   this.findMatchingAstroid(ship);
 
     // Check for colisions
     this.checkCollisionsWith(this.bullets, this.asteroids);
@@ -191,7 +273,8 @@ export class Reacteroids extends Component {
           y: randomNumBetweenExcluding(0, this.state.screen.height, ship.position.y-60, ship.position.y+60)
         },
         create: this.createObject.bind(this),
-        addScore: this.addScore.bind(this)
+        addScore: this.addScore.bind(this),
+        shortcut: getShortCut()
       });
       this.createObject(asteroid, 'asteroids');
     }
@@ -209,30 +292,26 @@ export class Reacteroids extends Component {
     return distance;
   }
 
-  setClosestAstroid(ship){
+  findMatchingAstroid(ship,currentKeys){
 
-    var distance = null;
-    let asteroid = null;
-    //find closeset 
-    this.asteroids.forEach(a => {
-
-      let asteroidDistance = this.calculateDistance(a.position,ship.position);
-      if (distance == null)
-      {
-          distance = asteroidDistance;
-          asteroid = a;
-      }
-      else if( asteroidDistance< distance) {
-        distance = asteroidDistance;
-        asteroid = a;
-
-      }
-        
-    });
-
+    console.log('currentKeys',currentKeys)
+    const pressedKeys = Array.from(currentKeys).sort().join('+');
+    console.log('pressedKeys',pressedKeys);
+    const asteroid = this.asteroids.find((b) => {
+      console.log('b.shortcut',b.shortcut.shortcut)
+      return b.shortcut.shortcut === pressedKeys});
+    
+    
    
     if (asteroid)
+    {
+      console.log('asteroid',asteroid);
       this.setState({astroidPostion: asteroid.position, astroidVelocity: asteroid.velocity});
+    }
+    else
+      this.setState({astroidPostion: null, astroidVelocity: null})
+
+    return asteroid;
   }
 
   createObject(item, group){

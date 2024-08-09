@@ -116,7 +116,7 @@ export default class Ship {
     }
     if(state.keys.space && Date.now() - this.lastShot > 300){
       let bullet;
-      if (state.keys.x) {
+      if (state.keys.x && state.astroidPostion) {
         bullet = new TrackingBullet({ship: this, velocity: this.calculateCollisionVelocity(this.position, state.astroidPostion,state.astroidVelocity,50 )});
       }
       else
@@ -126,8 +126,7 @@ export default class Ship {
       
     }
 
-    if(state.keys.x){
-      console.log('astroidVelocity',state.astroidVelocity);
+    if(state.keys.x && state.astroidPostion){
       this.autoAim(state.astroidPostion);
     }
 
