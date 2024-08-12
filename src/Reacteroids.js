@@ -64,6 +64,7 @@ export class Reacteroids extends Component {
       astroidPostion: {x:0,y:0},
       astroidVelocity: {x:0,y:0},
       hitCounts: {},
+      lastShortCut:null
     }
     this.ship = [];
     this.asteroids = [];
@@ -236,6 +237,7 @@ export class Reacteroids extends Component {
         hitCounts[shortcut.shortcut] = 1;
       this.setState({
         currentScore: this.state.currentScore + points,
+        lastShortCut: shortcut
       });
     }
   }
@@ -386,6 +388,9 @@ export class Reacteroids extends Component {
     } else {
       message = this.state.currentScore + ' Points though :)'
     }
+
+    if (this.state.lastShortCut)
+      message += `missed astroid: ${this.state.lastShortCut.description} hint: ${this.state.lastShortCut.shortcut}`;
 
     if(!this.state.inGame){
       endgame = (
