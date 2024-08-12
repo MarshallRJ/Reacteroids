@@ -3,6 +3,7 @@ import Ship from "./Ship";
 import Asteroid from "./Asteroid";
 import { randomNumBetweenExcluding } from "./helpers";
 import BackgroundSound from "./BackgroundSound";
+import backgroundVideoSrc from './images/Space_Blue.mp4';
 
 const shotSound = new Audio("Laser.wav");
 const explosionSound = new Audio("/Explode.mp3");
@@ -24,12 +25,9 @@ const shortcuts = [
 ];
 
 const getShortCut = ()=>{
-  //return shortcuts[];
   const newShortcut = shortcuts[Math.floor(Math.random() * shortcuts.length)];
   return newShortcut;
-} 
-
-
+}
 
 const KEY = {
   LEFT:  37,
@@ -74,7 +72,7 @@ export default class Reacteroids extends Component {
     this.asteroids = [];
     this.bullets = [];
     this.particles = [];
-    this.backgroundImage = new Image();
+    this.videoRef = React.createRef(); 
   }
 
   handleResize(value, e){
@@ -89,14 +87,10 @@ export default class Reacteroids extends Component {
 
   handleKeyDown(e) {
     let prev = this.state.currentKeys;
-    
     const key = e.key.toLowerCase();
-
-
     let currentKeys = new Set(prev);
     if (key === 'meta' || key === 'control') {
       currentKeys.add(commandKey);
-      
     } else if (key !== 'shift') {
       currentKeys.add(key);
     }
@@ -106,22 +100,19 @@ export default class Reacteroids extends Component {
   };
 
   handleKeyUp(e) {
-   
     let prev = this.state.currentKeys;
     const key = e.key.toLowerCase();
     let currentKeys = new Set(prev);
     if (key === 'meta' || key === 'control') {
       currentKeys.delete(commandKey);
-      
     } else {
       currentKeys.delete(key);
-      
     }
     this.setState({currentKeys: currentKeys})
     return currentKeys;
+  }
 
-  };
-
+ 
   handleKeys(value, e){
     e.preventDefault();
     let currentKeys;
@@ -172,11 +163,6 @@ export default class Reacteroids extends Component {
     this.setState({ context: context });
     this.startGame();
     requestAnimationFrame(() => {this.update()});
-
-    this.backgroundImage.src = 'https://img.freepik.com/premium-photo/glowing-spaceship-orbits-planet-starry-galaxy-generated-by-ai_1038396-45.jpg'
-;
-// Update with the actual path to your image
-  
   }
 
   componentWillUnmount() {
@@ -199,23 +185,21 @@ export default class Reacteroids extends Component {
     context.fillRect(0, 0, this.state.screen.width, this.state.screen.height);
     context.globalAlpha = 1;
 
-     // Draw background image
-     context.globalAlpha = 0.4;
-     context.drawImage(this.backgroundImage, 0, 0, this.state.screen.width, this.state.screen.height);
-     context.globalAlpha = 1;
-
-    // Next set of asteroids
-    if(!this.asteroids.length){
-      
-      //let count = this.state.asteroidCount + 1;
-      let count = this.state.asteroidCount;
-      this.setState({ asteroidCount: count });
-      this.generateAsteroids(count)
+    // Draw background video
+    context.globalAlpha = 1;
+    const video = this.videoRef.current;
+    if (video) {
+      context.drawImage(video, 0, 0, this.state.screen.width, this.state.screen.height);
     }
 
-    //set astroid pos
-    // if (ship)
-    //   this.findMatchingAstroid(ship);
+ // Next set of asteroids
+ if(!this.asteroids.length){
+      
+  //let count = this.state.asteroidCount + 1;
+  let count = this.state.asteroidCount;
+  this.setState({ asteroidCount: count });
+  this.generateAsteroids(count)
+}
 
     // Check for colisions
     this.checkCollisionsWith(this.bullets, this.asteroids);
@@ -228,14 +212,12 @@ export default class Reacteroids extends Component {
     this.updateObjects(this.ship, 'ship')
 
     context.restore();
-
     // Next frame
     requestAnimationFrame(() => {this.update()});
   }
 
   addScore(points, shortcut){
     if(this.state.inGame){
-
       var hitCounts = this.state.hitCounts;
       if (hitCounts[shortcut.shortcut])
         hitCounts[shortcut.shortcut]++;
@@ -302,9 +284,8 @@ export default class Reacteroids extends Component {
         addScore: this.addScore.bind(this),
         shortcut,
         level
-        
       });
- 
+
       console.log('level',asteroid.level)
       this.createObject(asteroid, 'asteroids');
     }
@@ -314,19 +295,16 @@ export default class Reacteroids extends Component {
     // Calculate the differences
     const dx = position2.x - position1.x;
     const dy = position2.y - position1.y;
-  
+
     // Calculate the distance using the Pythagorean theorem
     const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
     // Return the distance
     return distance;
   }
 
-  findMatchingAstroid(ship,currentKeys){
-
-    
+  findMatchingAstroid(ship, currentKeys) {
     const pressedKeys = Array.from(currentKeys).sort().join('+');
-    
     const asteroid = this.asteroids.find((b) => {
       console.log("b.shortcut", b.shortcut.shortcut);
       return b.shortcut.shortcut === pressedKeys;
@@ -411,7 +389,7 @@ export default class Reacteroids extends Component {
           <p>Game over, man!</p>
           <p>{message}</p>
           <button
-            onClick={ this.startGame.bind(this) }>
+           onClick={ this.startGame.bind(this) }>
             try again?
           </button>
         </div>
@@ -427,18 +405,44 @@ export default class Reacteroids extends Component {
         </span>
         <span className="score top-score">
           Top Score: {this.state.topScore}
+          <br/>
+          <a 
+  href='https://www.w3schools.com/tags/ref_keyboardshortcuts.asp'
+  style={{ fontSize: '12px', color: 'lightblue' }}
+>
+  Learn More Shortcuts
+</a>    
         </span>
         <span className="controls">
-          Get the correct combinations of
+          Get the correct combinations of keyboard shortcuts to fire and destroy the asteroids!
           <br/>
-          keyboard shortcuts to fire and
-          <br/>
-          destroy the asteroids!
+           </span>
+        <span className='footer'>
+          <a href='https://www.shesha.io/'>
+            <img src='src/images/sheshaBanner.png' alt='Shesha Banner' width='25%' height='25%' />
+          </a>
         </span>
+        <video
+          ref={this.videoRef}
+          src={backgroundVideoSrc}
+          autoPlay
+          loop
+          muted
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: -1,
+          }}
+        />
         <canvas
           ref="canvas"
           width={this.state.screen.width * this.state.screen.ratio}
           height={this.state.screen.height * this.state.screen.ratio}
+          style={{ position: 'relative' }}
         />
       </div>
     );
