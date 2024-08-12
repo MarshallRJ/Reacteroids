@@ -153,8 +153,8 @@ export class Reacteroids extends Component {
     });
   }
 
-  getLevel = (asteroid)=>{
-    let level = this.state.hitCounts[asteroid.shortcut.shortcut]
+  getLevel = (shortcut)=>{
+    let level = this.state.hitCounts[shortcut]
     return level ? level :0;
   } 
 
@@ -280,6 +280,8 @@ export class Reacteroids extends Component {
     let asteroids = [];
     let ship = this.ship[0];
     for (let i = 0; i < howMany; i++) {
+      let shortcut = getShortCut();
+      let level = this.getLevel(shortcut.shortcut);
       let asteroid = new Asteroid({
         size: 80,
         position: {
@@ -288,10 +290,11 @@ export class Reacteroids extends Component {
         },
         create: this.createObject.bind(this),
         addScore: this.addScore.bind(this),
-        shortcut: getShortCut(),
+        shortcut,
+        level
         
       });
-      asteroid.level = this.getLevel(asteroid);
+ 
       console.log('level',asteroid.level)
       this.createObject(asteroid, 'asteroids');
     }

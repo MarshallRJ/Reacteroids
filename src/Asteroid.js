@@ -19,6 +19,11 @@ export default class Asteroid {
     // Assign a word to the asteroid
     this.text = args.shortcut.description;
     this.shortcut = args.shortcut;
+    this.level = args.level;
+
+    //if we are less than level 1 show the shortcut
+    if (this.level < 2)
+      this.text += "\n" + args.shortcut.shortcut;
   }
  
   destroy(){
