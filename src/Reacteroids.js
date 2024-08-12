@@ -267,6 +267,8 @@ export class Reacteroids extends Component {
   gameOver(){
     this.setState({
       inGame: false,
+      //reset the hit counter
+      hitCounts: {}
     });
 
     // Replace top score
