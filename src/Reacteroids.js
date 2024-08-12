@@ -15,8 +15,8 @@ const shortcuts = [
   { description: "Find", shortcut: `${commandKey}+f` },
   { description: "Cut", shortcut: `${commandKey}+x` },
   { description: "Select All", shortcut: `a+${commandKey}` },
-  { description: "New File", shortcut: `${commandKey}+n` },
-  { description: "Close Tab", shortcut: `${commandKey}+w` },
+  //{ description: "New File", shortcut: `${commandKey}+n` },
+  //{ description: "Close Tab", shortcut: `${commandKey}+w` },
 ];
 
 const getShortCut = ()=>{
@@ -24,6 +24,8 @@ const getShortCut = ()=>{
   const newShortcut = shortcuts[Math.floor(Math.random() * shortcuts.length)];
   return newShortcut;
 } 
+
+
 
 const KEY = {
   LEFT:  37,
@@ -60,7 +62,8 @@ export class Reacteroids extends Component {
       topScore: localStorage['topscore'] || 0,
       inGame: false,
       astroidPostion: {x:0,y:0},
-      astroidVelocity: {x:0,y:0}
+      astroidVelocity: {x:0,y:0},
+      hitCounts: {},
     }
     this.ship = [];
     this.asteroids = [];
@@ -81,9 +84,9 @@ export class Reacteroids extends Component {
 
   handleKeyDown(e) {
     let prev = this.state.currentKeys;
-    console.log('prev',prev);
+    
     const key = e.key.toLowerCase();
-    console.log('key',key);
+
 
     let currentKeys = new Set(prev);
     if (key === 'meta' || key === 'control') {
@@ -149,6 +152,11 @@ export class Reacteroids extends Component {
       keys : keys
     });
   }
+
+  getLevel = (asteroid)=>{
+    let level = this.state.hitCounts[asteroid.shortcut.shortcut]
+    return level ? level :0;
+  } 
 
   componentDidMount() {
     window.addEventListener('keyup',   this.handleKeys.bind(this, false));
@@ -218,8 +226,14 @@ export class Reacteroids extends Component {
     requestAnimationFrame(() => {this.update()});
   }
 
-  addScore(points){
+  addScore(points, shortcut){
     if(this.state.inGame){
+
+      var hitCounts = this.state.hitCounts;
+      if (hitCounts[shortcut.shortcut])
+        hitCounts[shortcut.shortcut]++;
+      else
+        hitCounts[shortcut.shortcut] = 1;
       this.setState({
         currentScore: this.state.currentScore + points,
       });
@@ -274,8 +288,11 @@ export class Reacteroids extends Component {
         },
         create: this.createObject.bind(this),
         addScore: this.addScore.bind(this),
-        shortcut: getShortCut()
+        shortcut: getShortCut(),
+        
       });
+      asteroid.level = this.getLevel(asteroid);
+      console.log('level',asteroid.level)
       this.createObject(asteroid, 'asteroids');
     }
   }
@@ -294,18 +311,17 @@ export class Reacteroids extends Component {
 
   findMatchingAstroid(ship,currentKeys){
 
-    console.log('currentKeys',currentKeys)
+    
     const pressedKeys = Array.from(currentKeys).sort().join('+');
-    console.log('pressedKeys',pressedKeys);
+    
     const asteroid = this.asteroids.find((b) => {
-      console.log('b.shortcut',b.shortcut.shortcut)
+      
       return b.shortcut.shortcut === pressedKeys});
     
     
    
     if (asteroid)
     {
-      console.log('asteroid',asteroid);
       this.setState({astroidPostion: asteroid.position, astroidVelocity: asteroid.velocity});
     }
     else

@@ -5,8 +5,8 @@ export default class Asteroid {
   constructor(args) {
     this.position = args.position
     this.velocity = {
-      x: randomNumBetween(-1.5, 1.5),
-      y: randomNumBetween(-1.5, 1.5)
+      x: randomNumBetween(-0.5, 0.5),
+      y: randomNumBetween(-0.5, 0.5)
     }
     this.rotation = 0;
     this.rotationSpeed = randomNumBetween(-1, 1)
@@ -23,7 +23,7 @@ export default class Asteroid {
  
   destroy(){
     this.delete = true;
-    this.addScore(this.score);
+    this.addScore(this.score, this.shortcut);
  
     // Explode
     for (let i = 0; i < this.radius; i++) {
