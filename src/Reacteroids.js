@@ -291,8 +291,8 @@ export class Reacteroids extends Component {
       let asteroid = new Asteroid({
         size: 80,
         position: {
-          x: randomNumBetweenExcluding(0, this.state.screen.width, ship.position.x-60, ship.position.x+60),
-          y: randomNumBetweenExcluding(0, this.state.screen.height, ship.position.y-60, ship.position.y+60)
+          x: randomNumBetweenExcluding(0, this.state.screen.width, ship.position.x-120, ship.position.x+120),
+          y: randomNumBetweenExcluding(0, this.state.screen.height, ship.position.y-120, ship.position.y+120)
         },
         create: this.createObject.bind(this),
         addScore: this.addScore.bind(this),
