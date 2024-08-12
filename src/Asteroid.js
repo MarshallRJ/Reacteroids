@@ -19,16 +19,11 @@ export default class Asteroid {
     // Assign a word to the asteroid
     this.text = args.shortcut.description;
     this.shortcut = args.shortcut;
-    this.level = args.level;
-
-    //if we are less than level 1 show the shortcut
-    if (this.level < 2)
-      this.text += "\n" + args.shortcut.shortcut;
   }
  
   destroy(){
     this.delete = true;
-    this.addScore(this.score, this.shortcut);
+    this.addScore(this.score);
  
     // Explode
     for (let i = 0; i < this.radius; i++) {
@@ -40,8 +35,8 @@ export default class Asteroid {
           y: this.position.y + randomNumBetween(-this.radius/4, this.radius/4)
         },
         velocity: {
-          x: randomNumBetween(-1.5, 1.5),
-          y: randomNumBetween(-1.5, 1.5)
+          x: randomNumBetween(-0.5, 0.5),
+          y: randomNumBetween(-0.5, 0.5)
         }
       });
       this.create(particle, 'particles');

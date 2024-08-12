@@ -1,18 +1,8 @@
-# Reacteroids
-A implementation of the classic Asteroids game using React and Canvas in es6
+# React + Vite
 
-This was built with using the react transform boilerplate from
-https://github.com/gaearon/react-transform-boilerplate
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Demo
+Currently, two official plugins are available:
 
-http://chriz001.github.io/Reacteroids/
-
-## Install
-
-npm install
-npm start
-
-## Play
-
-Open http://localhost:3000
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
