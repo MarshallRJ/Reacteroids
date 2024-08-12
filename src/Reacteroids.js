@@ -202,7 +202,9 @@ export class Reacteroids extends Component {
 
     // Next set of asteroids
     if(!this.asteroids.length){
-      let count = this.state.asteroidCount + 1;
+      
+      //let count = this.state.asteroidCount + 1;
+      let count = this.state.asteroidCount;
       this.setState({ asteroidCount: count });
       this.generateAsteroids(count)
     }
