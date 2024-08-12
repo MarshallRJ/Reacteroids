@@ -14,7 +14,7 @@ export default class Ship {
     this.rotationSpeed = 6;
     this.speed = 0.15;
     this.inertia = 0.99;
-    this.radius = 40;// Increased radius for larger ship
+    this.radius = 20;// Increased radius for larger ship
     this.lastShot = 0;
     this.create = args.create;
     this.onDie = args.onDie;
