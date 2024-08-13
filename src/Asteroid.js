@@ -23,7 +23,7 @@ export default class Asteroid {
 
     //if we are less than level 1 show the shortcut
     if (this.level < 2)
-      this.hint  =args.shortcut.shortcut;
+      this.hint  = args.shortcut.hint || args.shortcut.shortcut;
 
     // Load spaceship image
     this.image = new Image();

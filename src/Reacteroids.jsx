@@ -13,13 +13,13 @@ const commandKey = isAppleDevice ? 'cmd' : 'ctrl';
 
 const shortcuts = [
   { description: "Save file", shortcut: `${commandKey}+s` },
-  { description: "Copy", shortcut: `c+${commandKey}` },
+  { description: "Copy", shortcut: `c+${commandKey}`, hint: `${commandKey}+c`},
   { description: "Paste", shortcut: `${commandKey}+v` },
   { description: "Undo", shortcut: `${commandKey}+z` },
   { description: "Redo", shortcut: isAppleDevice ? `${commandKey}+shift+z` : `${commandKey}+y` },
   { description: "Find", shortcut: `${commandKey}+f` },
   { description: "Cut", shortcut: `${commandKey}+x` },
-  { description: "Select All", shortcut: `a+${commandKey}` },
+  { description: "Select All", shortcut: `a+${commandKey}`, hint: `${commandKey}+a`},
   //{ description: "New File", shortcut: `${commandKey}+n` },
   //{ description: "Close Tab", shortcut: `${commandKey}+w` },
 ];
