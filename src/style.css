@@ -39,6 +39,19 @@ body {
     text-align: center;
     line-height: 1.6;
   }
+  .runningMessage {
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.6;
+    color: rgb(231, 122, 100);
+    margin-top: 10px;
+  }
   .endgame{
     position: absolute;
     top: 50%;

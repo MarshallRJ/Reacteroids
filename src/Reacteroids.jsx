@@ -24,9 +24,16 @@ const shortcuts = [
   //{ description: "Close Tab", shortcut: `${commandKey}+w` },
 ];
 
+const goodFeedback = ["well done!", "nice shot!!", "you got this!", "", "", "Yay!", "Super Cool"];
+
 const getShortCut = ()=>{
   const newShortcut = shortcuts[Math.floor(Math.random() * shortcuts.length)];
   return newShortcut;
+}
+
+const getRunningMessage= ()=>{
+  const newMessage = goodFeedback[Math.floor(Math.random() * goodFeedback.length)];
+  return newMessage;
 }
 
 const KEY = {
@@ -66,7 +73,8 @@ export default class Reacteroids extends Component {
       astroidPostion: {x:0,y:0},
       astroidVelocity: {x:0,y:0},
       hitCounts: {},
-      lastShortCut:null
+      lastShortCut:null,
+      runningMessage: null
     }
     this.ship = [];
     this.asteroids = [];
@@ -225,7 +233,8 @@ export default class Reacteroids extends Component {
         hitCounts[shortcut.shortcut] = 1;
       this.setState({
         currentScore: this.state.currentScore + points,
-        lastShortCut: shortcut
+        lastShortCut: shortcut,
+        runningMessage: getRunningMessage(),
       });
     }
   }
@@ -416,6 +425,9 @@ export default class Reacteroids extends Component {
         <span className="controls">
           Get the correct combinations of keyboard shortcuts to fire and destroy the asteroids!
           <br/>
+            <span className="runningMessage">
+              {this.state.runningMessage}
+            </span>
            </span>
         <span className='footer'>
           <a href='https://www.shesha.io/'>
