@@ -23,7 +23,9 @@ export default class Asteroid {
 
     //if we are less than level 1 show the shortcut
     if (this.level < 2)
-      this.text += "\n" + args.shortcut.shortcut;
+      this.hint  =args.shortcut.shortcut;
+
+   
   }
  
   destroy(){
@@ -110,6 +112,10 @@ export default class Asteroid {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(this.text, 0, 0);
+     //only displaying shorcut if its not destroyed
+     if (!this.destroyed && this.hint) {
+      context.fillText(this.hint, 2, 15);
+    }
     context.restore();
   }
 }
