@@ -390,7 +390,7 @@ export default class Reacteroids extends Component {
     }
 
     if (this.state.lastShortCut)
-      message += `missed astroid: ${this.state.lastShortCut.description} hint: ${this.state.lastShortCut.shortcut}`;
+      message += ` missed asteroid: ${this.state.lastShortCut.description} hint: ${this.state.lastShortCut.shortcut}`;
 
     if(!this.state.inGame){
       endgame = (
