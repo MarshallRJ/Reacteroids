@@ -4,6 +4,7 @@ import Asteroid from "./Asteroid";
 import { randomNumBetweenExcluding } from "./helpers";
 import BackgroundSound from "./BackgroundSound";
 import backgroundVideoSrc from './images/Space_Blue.mp4';
+import sheshaBanner from './images/sheshaBanner.png';
 
 const shotSound = new Audio("Laser.wav");
 const explosionSound = new Audio("/Explode.mp3");
@@ -431,7 +432,7 @@ export default class Reacteroids extends Component {
            </span>
         <span className='footer'>
           <a href='https://www.shesha.io/'>
-            <img src='src/images/sheshaBanner.png' alt='Shesha Banner' width='25%' height='25%' />
+            <img src={sheshaBanner} alt='Shesha Banner' width='25%' height='25%' />
           </a>
         </span>
         <video
