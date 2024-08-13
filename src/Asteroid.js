@@ -1,6 +1,7 @@
 import Particle from './Particle';
 import { asteroidVertices, randomNumBetween } from './helpers';
- 
+import spaceshipImage from './images/aestroid.png';
+
 export default class Asteroid {
   constructor(args) {
     this.position = args.position
@@ -10,12 +11,11 @@ export default class Asteroid {
     }
     this.rotation = 0;
     this.rotationSpeed = randomNumBetween(-1, 1)
-    this.radius = args.size;
+    this.radius = args.size*1;
     this.score = (80/this.radius)*5;
     this.create = args.create;
     this.addScore = args.addScore;
     this.vertices = asteroidVertices(8, args.size)
- 
     // Assign a word to the asteroid
     this.text = args.shortcut.description;
     this.shortcut = args.shortcut;
@@ -24,12 +24,15 @@ export default class Asteroid {
     //if we are less than level 1 show the shortcut
     if (this.level < 2)
       this.text += "\n" + args.shortcut.shortcut;
+
+    // Load spaceship image
+    this.image = new Image();
+    this.image.src = spaceshipImage;
   }
- 
+
   destroy(){
     this.delete = true;
     this.addScore(this.score, this.shortcut);
- 
     // Explode
     for (let i = 0; i < this.radius; i++) {
       const particle = new Particle({
@@ -37,7 +40,7 @@ export default class Asteroid {
         size: randomNumBetween(1, 3),
         position: {
           x: this.position.x + randomNumBetween(-this.radius/4, this.radius/4),
-          y: this.position.y + randomNumBetween(-this.radius/4, this.radius/4)
+          y: this.position.y + randomNumBetween(-this.radius/4, this.radius/4),
         },
         velocity: {
           x: randomNumBetween(-1.5, 1.5),
@@ -46,7 +49,6 @@ export default class Asteroid {
       });
       this.create(particle, 'particles');
     }
- 
     // Break into smaller asteroids
     // if (this.radius > 10){
     //   for (let i = 0; i < 2; i++) {
@@ -64,12 +66,12 @@ export default class Asteroid {
     //   }
     // }
   }
- 
+
   render(state){
     // Move
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
- 
+
     // Rotation
     this.rotation += this.rotationSpeed;
     if (this.rotation >= 360) {
@@ -78,7 +80,7 @@ export default class Asteroid {
     if (this.rotation < 0) {
       this.rotation += 360;
     }
- 
+
     // Screen edges
     if(this.position.x > state.screen.width + this.radius) this.position.x = -this.radius;
     else if(this.position.x < -this.radius) this.position.x = state.screen.width + this.radius;
@@ -90,20 +92,14 @@ export default class Asteroid {
     context.save();
     context.translate(this.position.x, this.position.y);
     context.rotate(this.rotation * Math.PI / 180);
-    context.strokeStyle = '#FFF';
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(0, -this.radius);
-    for (let i = 1; i < this.vertices.length; i++) {
-      context.lineTo(this.vertices[i].x, this.vertices[i].y);
-    }
-    context.closePath();
-    context.stroke();
- 
+
+    // Draw image
+    context.drawImage(this.image, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
+
     context.restore();
     context.save();
     context.translate(this.position.x, this.position.y);
- 
+
     // Draw text
     context.font = '14px Arial';
     context.fillStyle = '#FFF';
@@ -112,5 +108,11 @@ export default class Asteroid {
     context.fillText(this.text, 0, 0);
     context.restore();
   }
+
+  createGradient(context, radius) {
+    const gradient = context.createRadialGradient(0, 0, radius / 2, 0, 0, radius);
+    gradient.addColorStop(0, 'rgba(98, 3, 88, 0.6)');
+    gradient.addColorStop(1, 'rgba(10, 3, 199, 0.3)');
+    return gradient;
+  }
 }
- 
